@@ -56,10 +56,30 @@ jobs:
     steps:
       - name: pulling git repo
         uses: actions/checkout@v2
-      - name: deploying to heroku production
-        uses: akhileshns/heroku-deploy@v3.12.12
-        with:
-          heroku_api_key: $${{secrets.PROD_HEROKU_API_KEY}}
-          heroku_app_name: $${{secrets.PROD_HEROKU_APP_NAME}}
-          heroku_email: $${{secrets.PROD_HEROKU_EMAIL}}
-          remote_branch: "master"
+      - name: login to Heroku
+        env:
+          HEROKU_API_KEY: ${{secrets.PROD_HEROKU_API_KEY}}
+          HEROKU_EMAIL: ${{secrets.PROD_HEROKU_EMAIL}}
+        run: |
+        cat > ~/.netrc <<EOF
+            machine api.heroku.com
+              login $HEROKU_EMAIL
+              password $HEROKU_API_KEY
+            machine git.heroku.com
+              login $HEROKU_EMAIL
+              password $HEROKU_API_KEY
+        EOF
+      - name: Add Heroku remote
+        env:
+          HEROKU_APP_NAME: ${{secrets.PROD_HEROKU_APP_NAME}}
+        run: heroku git: remote --app $HEROKU_APP_NAME
+      - name: Push to Heroku
+        run: git push heroku master
+      
+      # - name: deploying to heroku production
+      #   uses: akhileshns/heroku-deploy@v3.12.12
+      #   with:
+      #     heroku_api_key: $${{secrets.PROD_HEROKU_API_KEY}}
+      #     heroku_app_name: $${{secrets.PROD_HEROKU_APP_NAME}}
+      #     heroku_email: $${{secrets.PROD_HEROKU_EMAIL}}
+      #     remote_branch: "master"
