@@ -1,6 +1,8 @@
 from app import schemas
 import pytest
 
+from app.models import Post
+
 def test_get_all_posts(authorized_client, test_posts):
     res = authorized_client.get("/posts/")
 
@@ -73,5 +75,31 @@ def test_delete_post_non_exists(authorized_client, test_user, test_posts):
 def test_delete_post_for_other_user(authorized_client, test_user, test_posts):
     res = authorized_client.delete(f"/posts/{test_posts[3].id}")
     assert res.status_code == 403
+
+def test_update_post(authorized_client, test_user, test_posts):
+    data = {
+        "title": "updated title",
+        "content": "updated content",
+        "id": test_posts[0].id
+    }
+    res = authorized_client.put(f"/posts/{test_posts[0].id}", json=data)
+    updated_post = schemas.Post(**res.json())
+
+    assert res.status_code == 200
+    assert updated_post.title == data["title"]
+    assert updated_post.content == data["content"]
+
+def test_update_post_for_other_user(authorized_client, test_user, test_user2, test_posts):
+    data = {
+        "title": "updated title",
+        "content": "updated content",
+        "id": test_posts[3].id
+    }
+    res = authorized_client.put(f"/posts/{test_posts[3].id}", json=data)
+
+    assert res.status_code == 403
+    
+
+
 
 
