@@ -22,30 +22,28 @@ jobs:
         POSTGRES_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
         POSTGRES_DB: ${{secrets.DATABASE_NAME}}_Test
       ports:
-       - 5432:5432
+        - 5432:5432
       options: >-
-       --health-cmd pg_isready
-       --health-interval 10s
-       --health-timeout 5s
-       --health-retries 5
+        --health-cmd pg_isready
+        --health-interval 10s
+        --health-timeout 5s
+        --health-retries 5
 
     # specify the operating system
     runs-on: ubuntu-latest
     # specify the steps
     steps:
-    - name: pulling git repo
-      uses: actions/checkout@v2
-    - name: install python version 3.9
-      uses: actions/setup-python@v2
-      with:
-       python-version: "3.9"
-    - name: update pip
-      run: python -m pip install --upgrade pip
-    - name: install all dependancies
-      run: pip install -r requirements.txt
-    - name: test with pytest
-      run: |
-        pip install pytest
-        pytest   
-
-
+      - name: pulling git repo
+        uses: actions/checkout@v2
+      - name: install python version 3.9
+        uses: actions/setup-python@v2
+        wiith:
+          python-version: "3.9"
+      - name: update pip
+        run: python -m pip install --upgrade pip
+      - name: install all dependancies
+        run: pip install -r requirements.txt
+      - name: test with pytest
+        run: |
+          pip install pytest
+          pytest
