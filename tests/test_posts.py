@@ -21,5 +21,9 @@ def test_unauthorized_user_get_single_post(client, test_posts):
     res = client.get(f"/posts/{test_posts[0].id}")
     assert res.status_code == 401
 
+def test_authorized_user_get_single_post_does_not_exist(authorized_client, test_posts):
+    res = authorized_client.get(f"/posts/8888")
+    assert res.status_code == 404
+
 
 
