@@ -62,6 +62,6 @@ jobs:
           heroku_api_key: $${{secrets.PROD_HEROKU_API_KEY}}
           heroku_app_name: $${{secrets.PROD_HEROKU_APP_NAME}}
           heroku_email: $${{secrets.PROD_HEROKU_EMAIL}}
-          remote_brand: "master"
+          remote_branch: "master"
   
 
