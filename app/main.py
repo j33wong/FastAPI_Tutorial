@@ -16,6 +16,7 @@ app = FastAPI()
 # if you want everyone to access it
 origins = ["*"]
 
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -29,11 +30,6 @@ app.include_router(user.router)
 app.include_router(auth.router)
 app.include_router(vote.router)
 
-app.get("/")
-async def root():
+@app.get("/")
+def root():
     return {"message": "Hello World"}
-
-
-
-
-
