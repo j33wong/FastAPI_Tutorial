@@ -63,5 +63,3 @@ jobs:
           heroku_app_name: $${{secrets.PROD_HEROKU_APP_NAME}}
           heroku_email: $${{secrets.PROD_HEROKU_EMAIL}}
           remote_branch: "master"
-  
-
