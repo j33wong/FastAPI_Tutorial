@@ -1,4 +1,5 @@
 from app import schemas
+import pytest
 
 def test_get_all_posts(authorized_client, test_posts):
     res = authorized_client.get("/posts/")
@@ -25,5 +26,22 @@ def test_authorized_user_get_single_post_does_not_exist(authorized_client, test_
     res = authorized_client.get(f"/posts/8888")
     assert res.status_code == 404
 
+def test_authorized_user_get_single_post(authorized_client, test_posts):
+    res = authorized_client.get(f"/posts/{test_posts[0].id}")
+    post = schemas.PostOut(**res.json())
+    assert post.Post.id == test_posts[0].id
+    assert post.Post.content == test_posts[0].content
 
+@pytest.mark.parametrize("title, content, published", [
+    ("awesome new title", "awesome new content", True),
+    ("faorite pizza", "i love pepperoni", False),
+    ("tallesst skyscrapers", "wahoo", True)])
+def test_create_post(authorized_client, test_user, title, content, published):
+    res = authorized_client.post("/posts/", json={"title": title, "content": content, "published": published})
+    created_post = schemas.Post(**res.json())
+    assert res.status_code == 201
+    assert created_post.title == title
+    assert created_post.content == content
+    assert created_post.published == published
+    assert created_post.owner_id == test_user["id"]
 
